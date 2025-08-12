@@ -1,1 +1,3 @@
 Pillow>=10.1.0
+FontTools>=4.38.0
+qrcode>=8.0.0
