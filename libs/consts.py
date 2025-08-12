@@ -107,3 +107,9 @@ class IconPreset(_Enum):
     """Icon preset types."""
     GOLD = Icon.LEVEL | Icon.MASTER | Icon.RATING
     FREEDOM = Icon.FREEDOM | Icon.MASTER | Icon.RATING
+
+    # Before maimai DX Splash PLUS...
+    OLD_BRONZE = Icon.POWER1
+    OLD_SILVER = Icon.POWER2
+    OLD_GOLD = Icon.POWER3 | Icon.MASTER | Icon.RATING
+    OLD_PLATINUM = Icon.POWER4 | Icon.MASTER | Icon.RATING
