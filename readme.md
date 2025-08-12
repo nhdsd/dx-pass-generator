@@ -41,7 +41,7 @@ py main.py -h
 | | `‑‑raw‑aime` | 跳过纯数字 Aime 处理。目前不起作用。| |
 | `‑v` | `‑‑version` | 版本信息。不指定就会留空。你可以选择使用自定义的文本。| |
 | `‑q` | `‑‑qr‑code` | 二维码文本。不指定就会留空。| |
-| `‑i` | `‑‑icon` | 左下方显示的增益效果。不指定就会留空。可以使用空格分隔多个效果图标名以输入多个效果。允许 `power1`~`power4`（旧版铜卡~白金卡的区域前进增幅效果）、`level`（旅行伙伴升级增幅）、`freedom`（自由模式时间延长）、`master`（解禁 Master 和 Re:Master 难度）、`rating`（显示参与 DX Rating 计算的乐曲）。| |
+| `‑i` | `‑‑icon` | 左下方显示的增益效果。不指定就会留空。可以使用空格分隔多个效果图标名以输入多个效果。允许 `power1`\~`power4`（旧版铜卡\~白金卡的区域前进增幅效果）、`level`（旅行伙伴升级增幅）、`freedom`（自由模式时间延长）、`master`（解禁 Master 和 Re:Master 难度）、`rating`（显示参与 DX Rating 计算的乐曲）。| |
 | `‑d` | `‑‑date` | 到期日期。留空会自动填写 14 日后的日期。支持 yyyymmdd、yyyy-mm-dd 和 yyyy/mm/dd。| |
 
 生成示例图片（[`output.png`](./output.png)）：
