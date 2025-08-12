@@ -14,14 +14,10 @@
    git clone https://github.com/nhdsd/dx-pass-generator
    ```
 3. 安装依赖：
-    ```
-    pip install -r requirements.txt
-    ```
-4. 安装资源文件：
-   > [!NOTE]
-   > 资源文件正在整理中，链接将在后续提供。
-   > 自 FESTiVAL 代起，原始资源文件的质量显著下降，并且纵横比不正确。
-   > 我们修复了纵横比，但是对于画质问题我们无能为力。
+   ```
+   pip install -r requirements.txt
+   ```
+4. 安装资源文件(约 200 MiB)：[OneDrive](https://1drv.ms/u/c/68dff5f977fb346f/EWVbUaAGXVpNgOnmXDfGwY8BIDpuBi-IrsE2haxx-yK3jg)
 
 ## 使用
 
