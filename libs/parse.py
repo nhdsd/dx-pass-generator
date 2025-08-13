@@ -21,7 +21,7 @@ def argparser() -> _argparse.Namespace:
     """
     Parse the command line input.
     Returns:
-        dict[str, int | str | None]: The parsed arguments.
+        argparse.Namespace: The parsed arguments.
     """
     def _parse_int_or_str(value: str) -> int | str:
         try:
@@ -71,7 +71,7 @@ def argparser() -> _argparse.Namespace:
         "-n", "--name",
         dest="chara_name",
         type=str,
-        help="Override the character name displayed. Not Implemented.",
+        help="Override the character name displayed.",
         default=None
     )
 
@@ -79,7 +79,6 @@ def argparser() -> _argparse.Namespace:
         "-p", "--player-name",
         dest="player_name",
         type=str,
-        required=True,
         help=("The player name. 'maimai' by default. Half-width characters will be converted "
               "to full-width characters. --half-width and --full-width control this."),
         default="maimai"
@@ -104,7 +103,7 @@ def argparser() -> _argparse.Namespace:
         "-r", "--rating",
         dest="rating",
         type=int,
-        help="The rating.",
+        help="The rating. If not specified, the friend code will be displayed as '-----'",
         default=None
     )
 
@@ -128,8 +127,8 @@ def argparser() -> _argparse.Namespace:
         "--raw-aime",
         dest="raw_aime",
         action="store_true",
-        help="Prevent the processing of the Aime ID. Not Implemented.",
-        default=""
+        help="Prevent the processing of the Aime ID.",
+        default=False
     )
 
     parser.add_argument(
@@ -144,8 +143,8 @@ def argparser() -> _argparse.Namespace:
         "-q", "--qr-code",
         dest="qr_code",
         type=str,
-        help="The QR code text. Empty by default.",
-        default=""
+        help="The QR code text. If not specified, the dummy QR code will be used.",
+        default=None
     )
 
     parser.add_argument(

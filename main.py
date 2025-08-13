@@ -17,7 +17,7 @@ Main entry point for the application.
 from libs.parse import argparser as _argparser
 from libs.utils import to_full_width as _to_full_width
 from libs.draw import draw_rating as _draw_rating, draw_name as _draw_name\
-    ,draw_friend_code as _draw_friend_code, draw_aime_and_version as _draw_aime_and_version\
+    ,draw_friend_code as _draw_friend_code, draw_aime as _draw_aime, draw_version as _draw_version\
     ,draw_qr_code as _draw_qr_code, draw_icon as _draw_icon, draw_basic as _draw_basic\
     ,draw_chara_name as _draw_chara_name, draw_date as _draw_date
 
@@ -30,10 +30,14 @@ def _main():
     else:
         result = _draw_name(args.player_name, result)
     result = _draw_friend_code(args.friend_code, result)
-    result = _draw_aime_and_version(args.aime, args.version, result)
+    result = _draw_aime(args.aime, result, raw=args.raw_aime)
+    result = _draw_version(args.version, result)
     result = _draw_qr_code(args.qr_code, result)
     result = _draw_icon(args.icon, result)
-    result = _draw_chara_name(args.chara, result)
+    if args.chara_name is not None:
+        result = _draw_name(args.chara_name, result)
+    else:
+        result = _draw_chara_name(args.chara, result)
     result = _draw_date(args.date, result)
     result.save("output.png")
 

@@ -42,6 +42,20 @@ def to_full_width(text: str) -> str:
     # !: U+0021, ~: U+007E
     return ''.join(chr(ord(c) + 0xFEE0) if '!' <= c <= '~' else c for c in text)
 
+def find_rating_background(rating: int) -> int:
+    """Find the background image index for the given rating.
+    Params:
+        rating (int): The rating value.
+    Returns:
+        int: The background image index.
+    Raises:
+        ValueError: If the rating is negative.
+    """
+    if rating < 0:
+        raise ValueError(f"Rating must be non-negative, but got {rating}.")
+    thresholds = (1000, 2000, 4000, 7000, 10000, 12000, 13000, 14000, 14500, 15000)
+    return 1 + sum(int(rating >= threshold) for threshold in thresholds)
+
 def text_validate(text: str) -> None:
     """Validate the input text.
     Params:

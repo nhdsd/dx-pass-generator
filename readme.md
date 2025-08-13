@@ -14,6 +14,14 @@ git clone https://github.com/nhdsd/dx-pass-generator
 pip install -r requirements.txt
 ```
 4. 安装资源文件(约 200 MiB)：[OneDrive](https://1drv.ms/u/c/68dff5f977fb346f/EWVbUaAGXVpNgOnmXDfGwY8BIDpuBi-IrsE2haxx-yK3jg)
+> 自资源文件上传后，我们在 `resources/general` 下新增了一个文件 `Num-.png` (164 Bytes)，其 Base64 编码如下：
+> ```
+> iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAYAAAAFQMh/AAAAa0lEQVR4nO3WQQqAIBCF4ZlHZ+mMHbhbtJhoE5W4CJo3Qu8HFyL4ISjo2zpbRShRTTAxMLFrgmmBR90TTAu/g6fegj/mUXDiJdwP9834BE4JOdsKbvPeZ2+EW819x2G5IXl/wWeCaYFHDQLvkCAUuVyokUoAAAAASUVORK5CYII=
+> ```
+> 图片内容如下：  
+> ![Num-](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAYAAAAFQMh/AAAAa0lEQVR4nO3WQQqAIBCF4ZlHZ+mMHbhbtJhoE5W4CJo3Qu8HFyL4ISjo2zpbRShRTTAxMLFrgmmBR90TTAu/g6fegj/mUXDiJdwP9834BE4JOdsKbvPeZ2+EW819x2G5IXl/wWeCaYFHDQLvkCAUuVyokUoAAAAASUVORK5CYII=)  
+> 如果你需要隐藏 Rating 值，就需要自行转换该文件并把它放置在相应目录下。
+> 我们会在下一次资源文件有大幅变动时合并此更改。
 
 ## 使用
 
@@ -31,16 +39,16 @@ py main.py -h
 | `‑l` | `‑‑pass‑level` | DX Pass 的等级。允许 `bronze`、`silver`、`gold`（默认）、`freedom`。不区分大小写。| |
 | `‑c` | `‑‑chara` | 角色的 ID。可以通过查看 `resources/character` 下图片的文件名获取。可以忽略掉前导零。| :white_check_mark: |
 | `‑b` | `‑‑background` | 背景的 ID。可以通过查看 `resources/background` 下图片的文件名获取。可以忽略掉前导零。 | :white_check_mark: |
-| `‑n` | `‑‑name` | 自定义显示的角色名称。目前没有作用。| |
-| `‑p` | `‑‑player‑name` | 玩家名称。为了方便起见，默认情况下玩家名称会被转换为全角的。| :white_check_mark: |
+| `‑n` | `‑‑name` | 自定义显示的角色名称。| |
+| `‑p` | `‑‑player‑name` | 玩家名称。为了方便起见，默认情况下玩家名称会被转换为全角的。| |
 | | `‑‑full‑width` | 指定玩家名称使用全角字符显示。这也是默认效果。| |
 | | `‑‑half‑width` | 指定玩家名称使用半角字符显示。这并不会把原有的全角字符转换为半角的。| |
-| `‑r` | `‑‑rating` | 玩家的 DX Rating 值。| :white_check_mark: |
+| `‑r` | `‑‑rating` | 玩家的 DX Rating 值。不指定就会显示为几条横线。| |
 | `‑f` | `‑‑friend‑code` | 玩家的好友码。不指定就会显示为几条横线。你可以选择使用自定义的文本。| |
 | `‑a` | `‑‑aime` | 玩家的 Aime 卡号。不指定就会留空。你可以选择使用自定义的文本。需要注意的是纯数字的 Aime 会被校验（超过 20 位报错，不足 20 位补零），并添加每 4 位之间的空格。| |
-| | `‑‑raw‑aime` | 跳过纯数字 Aime 处理。目前不起作用。| |
+| | `‑‑raw‑aime` | 跳过纯数字 Aime 处理。| |
 | `‑v` | `‑‑version` | 版本信息。不指定就会留空。你可以选择使用自定义的文本。| |
-| `‑q` | `‑‑qr‑code` | 二维码文本。不指定就会留空。| |
+| `‑q` | `‑‑qr‑code` | 二维码文本。不指定就会使用默认的占位符。| |
 | `‑i` | `‑‑icon` | 左下方显示的增益效果。不指定就会留空。可以使用空格分隔多个效果图标名以输入多个效果。允许 `power1`\~`power4`（旧版铜卡\~白金卡的区域前进增幅效果）、`level`（旅行伙伴升级增幅）、`freedom`（自由模式时间延长）、`master`（解禁 Master 和 Re:Master 难度）、`rating`（显示参与 DX Rating 计算的乐曲）。| |
 | `‑d` | `‑‑date` | 到期日期。留空会自动填写 14 日后的日期。支持 yyyymmdd、yyyy-mm-dd 和 yyyy/mm/dd。| |
 

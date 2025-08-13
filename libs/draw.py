@@ -21,9 +21,9 @@ import qrcode.constants as _qrcode_constants
 import qrcode.exceptions as _qrcode_exceptions
 
 from .utils import get_font as _get_font, aime_process as _aime_process,\
-    find_chara_name as _find_chara_name, date_process as _date_process
-from .consts import RatingNum as _RatingNum, RatingBackground as _RatingBackground,\
-    DXPass as _Pass, Icon as _Icon
+    find_chara_name as _find_chara_name, date_process as _date_process,\
+    find_rating_background as _find_ra_bg
+from .consts import DXPass as _Pass, Icon as _Icon
 
 
 def draw_basic(base: str | int, chara: str | int, pass_type: _Pass, /) -> _Image.Image:
@@ -41,26 +41,33 @@ def draw_basic(base: str | int, chara: str | int, pass_type: _Pass, /) -> _Image
     base_image.alpha_composite(pass_image, (0, 0))
     return base_image
 
-def draw_rating(rating: int, base: _Image.Image, /) -> _Image.Image:
+def draw_rating(rating: int | None, base: _Image.Image, /) -> _Image.Image:
     """Draw DX Rating.
     Params:
-        rating (int): The rating value.
+        rating (int | None): The rating value. `None` means no rating.
         base (PIL.Image.Image): The input image to draw on.
     Returns:
         PIL.Image.Image: The generated image.
     """
-    # Get the background
-    rating_background = _Image.open(_RatingBackground.get_bg_name(rating))
-    base.alpha_composite(rating_background, (461, 32))
-
-    # Draw the rating digit by digit, starting from the right
     x = 690
-    while rating:
-        digit = rating % 10
-        rating //= 10
-        digit_img = _Image.open(getattr(_RatingNum, f"NUM{digit}").value)
-        base.alpha_composite(digit_img, (x, 52))
-        x -= 29
+
+    # Get the background
+    if rating is not None:
+        rating_background = _Image.open(f"resources/general/Ra{_find_ra_bg(rating)}.png")
+        base.alpha_composite(rating_background, (461, 32))
+        # Draw the rating digit by digit, starting from the right
+        while rating:
+            digit = rating % 10
+            rating //= 10
+            digit_img = _Image.open(f"resources/general/Num{digit}.png")
+            base.alpha_composite(digit_img, (x, 52))
+            x -= 29
+    else:
+        base.alpha_composite(_Image.open("resources/general/Ra1.png"), (461, 32))
+        for _ in range(5):
+            digit_img = _Image.open("resources/general/Num-.png")
+            base.alpha_composite(digit_img, (x, 52))
+            x -= 29
 
     return base
 
@@ -128,39 +135,58 @@ def draw_friend_code(code: int | str | None, base: _Image.Image, /) -> _Image.Im
     return base
 
 
-def draw_aime_and_version(aime: int | str | None, version: str, base: _Image.Image) -> _Image.Image:
-    """Draw Aime and Version.
+def draw_aime(aime: int | str, base: _Image.Image, /, *, raw: bool = False) -> _Image.Image:
+    """Draw Aime ID.
     Params:
-        aime (int | str | None): The Aime ID to draw. `None` means no Aime ID.
-        version ( str): The version to draw.
+        aime (int | str): The Aime ID to draw. `None` means no Aime ID.
         base (PIL.Image.Image): The input image to draw on.
+        raw (bool): If True, the Aime ID will be drawn without any processing.
     Returns:
         PIL.Image.Image: The generated image.
     Raises:
         ValueError: If the Aime ID is invalid.
     """
-    if isinstance(aime, int):
+    if isinstance(aime, int) and not raw:
         aime = _aime_process(aime)
+    else:
+        aime = str(aime)
 
     font = _get_font(16)
     draw = _Draw.Draw(base)
     if aime is not None:
         draw.text((156, 1006), aime, font=font, fill=(255, 255, 255), anchor="lt")
 
-    draw.text((425, 1006), version, font=font, fill=(255, 255, 255), anchor="lt")
 
     return base
 
-def draw_qr_code(data: str, base: _Image.Image, /) -> _Image.Image:
+def draw_version(version: str, base: _Image.Image, /) -> _Image.Image:
+    """Draw Version.
+    Params:
+        version (str): The version to draw.
+        base (PIL.Image.Image): The input image to draw on.
+    Returns:
+        PIL.Image.Image: The generated image.
+    """
+    font = _get_font(16)
+    draw = _Draw.Draw(base)
+    draw.text((425, 1006), version, font=font, fill=(255, 255, 255), anchor="lt")
+    return base
+
+def draw_qr_code(data: str | None, base: _Image.Image, /) -> _Image.Image:
     """Draw QR Code. Error correction level: Medium.
     Params:
-        data (str): The data to encode in the QR code.
+        data (str | None): The data to encode in the QR code. Dummy QR code will be used if None.
         base (PIL.Image.Image): The input image to draw on.
     Returns:
         PIL.Image.Image: The generated image with the QR code.
     Raises:
         ValueError: If the data overflows. The maximum version is QR Code 6.
     """
+    if data is None:
+        dummy_qr_code = _Image.open("resources/general/DummyQRCode.png")
+        base.alpha_composite(dummy_qr_code, (581, 866))
+        return base
+
     for version in range(1, 7):
         qr = _qrcode.QRCode(
             version=version,
@@ -202,16 +228,19 @@ def draw_qr_code(data: str, base: _Image.Image, /) -> _Image.Image:
 
     return base
 
-def draw_icon(icons: list[_Icon], base: _Image.Image, /) -> _Image.Image:
+def draw_icon(icons: list[_Icon] | None, base: _Image.Image, /) -> _Image.Image:
     """Draw icons.
     Params:
-        icons (list[Icon]): The list of icons.
+        icons (list[Icon] | None): The list of icons. `None` means no icons.
         base (PIL.Image.Image): The input image to draw on.
     Returns:
         PIL.Image.Image: The generated image.
     Raises:
         ValueError: If too many icons are provided. At most 4 icons are allowed.
     """
+    if icons is None:
+        return base
+
     if (count := len(icons)) > 4:
         raise ValueError(f"Icons exceed the limit (4 icons). {count} icons provided.")
     for i, icon in enumerate(icons):

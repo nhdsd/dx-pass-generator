@@ -16,52 +16,6 @@ Constants for image processing.
 """
 from enum import Enum as _Enum
 
-class RatingNum(_Enum):
-    """File names of the DX Rating sprites."""
-    # Digits of the DX Rating
-    NUM1 = "resources/general/Num1.png"
-    NUM2 = "resources/general/Num2.png"
-    NUM3 = "resources/general/Num3.png"
-    NUM4 = "resources/general/Num4.png"
-    NUM5 = "resources/general/Num5.png"
-    NUM6 = "resources/general/Num6.png"
-    NUM7 = "resources/general/Num7.png"
-    NUM8 = "resources/general/Num8.png"
-    NUM9 = "resources/general/Num9.png"
-    NUM0 = "resources/general/Num0.png"
-
-class RatingBackground(_Enum):
-    """File names of the DX Rating sprites."""
-    # Background
-    WHITE = "resources/general/Ra1.png" # 0 - 999
-    BLUE = "resources/general/Ra2.png" # 1000 - 1999
-    GREEN = "resources/general/Ra3.png" # 2000 - 3999
-    YELLOW = "resources/general/Ra4.png" # 4000 - 6999
-    RED = "resources/general/Ra5.png" # 7000 - 9999
-    PURPLE = "resources/general/Ra6.png" # 10000 - 11999
-    BRONZE = "resources/general/Ra7.png" # 12000 - 12999
-    SILVER = "resources/general/Ra8.png" # 13000 - 13999
-    GOLD = "resources/general/Ra9.png" # 14000 - 14499
-    PLATINUM = "resources/general/Ra10.png" # 14500 - 14999
-    RAINBOW = "resources/general/Ra11.png" # 15000 - + inf (Theoretical Rating: ~16550)
-
-    @classmethod
-    def get_bg_name(cls, rating: int) -> str:
-        """
-        Get the background name for a given rating.
-        Params:
-            rating (int): The rating value.
-        Returns:
-            str: The background name for the given rating.
-        """
-        if not isinstance(rating, int):
-            raise TypeError(f"Expected int, but got {type(rating).__name__}.")
-        if rating < 0:
-            raise ValueError(f"Rating must be non-negative, but got {rating}.")
-        thresholds = (1000, 2000, 4000, 7000, 10000, 12000, 13000, 14000, 14500, 15000)
-        index = sum(int(rating >= threshold) for threshold in thresholds)
-        return tuple(cls)[index].value
-
 class DXPass(_Enum):
     """DX Pass types."""
     BRONZE = "resources/general/BronzeBase.png"
