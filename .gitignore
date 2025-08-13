@@ -13,3 +13,6 @@ dist/
 build/
 resources/
 .vscode
+venv/
+main.build/
+main.dist/

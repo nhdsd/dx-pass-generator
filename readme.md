@@ -4,6 +4,7 @@
 
 ## 安装
 
+### 从源代码使用
 1. 安装 Python 3.12 或更高版本；
 2. 克隆该项目：
 ```bash
@@ -14,6 +15,14 @@ git clone https://github.com/nhdsd/dx-pass-generator
 pip install -r requirements.txt
 ```
 4. 安装资源文件(约 200 MiB)：[OneDrive](https://1drv.ms/u/c/68dff5f977fb346f/EWVbUaAGXVpNgOnmXDfGwY8BIDpuBi-IrsE2haxx-yK3jg)
+   在根目录下新建 `resources` 目录，并把内容解压到该目录下。
+   
+### 从可执行文件使用（仅限 Windows）
+1. 前往 [Release](https://github.com/nhdsd/dx-pass-generator/releases) 页面。
+2. 下载可执行文件压缩包并解压。
+3. 安装资源文件(约 200 MiB)：[OneDrive](https://1drv.ms/u/c/68dff5f977fb346f/EWVbUaAGXVpNgOnmXDfGwY8BIDpuBi-IrsE2haxx-yK3jg)
+   在根目录下新建 `resources` 目录，并把内容解压到该目录下。
+
 > 自资源文件上传后，我们在 `resources/general` 下新增了一个文件 `Num-.png` (164 Bytes)，其 Base64 编码如下：
 > ```
 > iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAYAAAAFQMh/AAAAa0lEQVR4nO3WQQqAIBCF4ZlHZ+mMHbhbtJhoE5W4CJo3Qu8HFyL4ISjo2zpbRShRTTAxMLFrgmmBR90TTAu/g6fegj/mUXDiJdwP9834BE4JOdsKbvPeZ2+EW819x2G5IXl/wWeCaYFHDQLvkCAUuVyokUoAAAAASUVORK5CYII=
@@ -23,11 +32,7 @@ pip install -r requirements.txt
 
 ## 使用
 
-使用命令行操作。可以使用
-```bash
-py main.py -h
-```
-查看内置帮助（英文）。你也可以参考下表：
+使用命令行操作。参数可参考下表：
 > [!WARNING]
 > 不要从下表复制参数名！为了保证显示效果，下表的参数名包含了不间断连字符(`U+2011`)。此外，表头文字之间有文字连接符（`U+2060`）。
 
@@ -60,4 +65,4 @@ py main.py -c 550105 -b 500001 -p AAAAAAAA -r 15000 -a 12345678901234567890 -v "
 
 ## 许可证
 
-[Apache License 2.0](./LICENSE)
+[Apache License 2.0](./LICENSE.txt)
