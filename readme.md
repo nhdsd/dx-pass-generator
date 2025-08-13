@@ -18,8 +18,6 @@ pip install -r requirements.txt
 > ```
 > iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAYAAAAFQMh/AAAAa0lEQVR4nO3WQQqAIBCF4ZlHZ+mMHbhbtJhoE5W4CJo3Qu8HFyL4ISjo2zpbRShRTTAxMLFrgmmBR90TTAu/g6fegj/mUXDiJdwP9834BE4JOdsKbvPeZ2+EW819x2G5IXl/wWeCaYFHDQLvkCAUuVyokUoAAAAASUVORK5CYII=
 > ```
-> 图片内容如下：  
-> ![Num-](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAgCAYAAAAFQMh/AAAAa0lEQVR4nO3WQQqAIBCF4ZlHZ+mMHbhbtJhoE5W4CJo3Qu8HFyL4ISjo2zpbRShRTTAxMLFrgmmBR90TTAu/g6fegj/mUXDiJdwP9834BE4JOdsKbvPeZ2+EW819x2G5IXl/wWeCaYFHDQLvkCAUuVyokUoAAAAASUVORK5CYII=)  
 > 如果你需要隐藏 Rating 值，就需要自行转换该文件并把它放置在相应目录下。
 > 我们会在下一次资源文件有大幅变动时合并此更改。
 
