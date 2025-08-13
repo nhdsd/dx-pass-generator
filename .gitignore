@@ -11,11 +11,12 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-resources/*/*
+resources/
 .vscode
 venv/
 main.build/
 main.dist/
+binary/
 
 # exclude those assets which are necessary for the ci workflow
 !resources/background/CardBase500001.png

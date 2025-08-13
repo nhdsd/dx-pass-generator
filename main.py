@@ -14,6 +14,8 @@
 """
 Main entry point for the application.
 """
+from time import time as _time
+
 from libs.parse import argparser as _argparser
 from libs.utils import to_full_width as _to_full_width
 from libs.draw import draw_rating as _draw_rating, draw_name as _draw_name\
@@ -22,6 +24,8 @@ from libs.draw import draw_rating as _draw_rating, draw_name as _draw_name\
     ,draw_chara_name as _draw_chara_name, draw_date as _draw_date
 
 def _main():
+    start = _time()
+    print("绘制开始！")
     args = _argparser()
     result = _draw_basic(args.background, args.chara, args.pass_type)
     result = _draw_rating(args.rating, result)
@@ -35,11 +39,12 @@ def _main():
     result = _draw_qr_code(args.qr_code, result)
     result = _draw_icon(args.icon, result)
     if args.chara_name is not None:
-        result = _draw_name(args.chara_name, result)
+        result = _draw_chara_name(args.chara_name, result)
     else:
         result = _draw_chara_name(args.chara, result)
     result = _draw_date(args.date, result)
     result.save("output.png")
+    print(f"绘制结束，用时 {_time() - start:.2f} 秒。")
 
 if __name__ == "__main__":
     _main()

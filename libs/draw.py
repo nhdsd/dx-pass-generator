@@ -22,11 +22,12 @@ import qrcode.exceptions as _qrcode_exceptions
 
 from .utils import get_font as _get_font, aime_process as _aime_process,\
     find_chara_name as _find_chara_name, date_process as _date_process,\
-    find_rating_background as _find_ra_bg
+    find_rating_background as _find_ra_bg, open_image as _open_image,\
+    text_width_validate as _text_width_validate
 from .consts import DXPass as _Pass, Icon as _Icon
 
 
-def draw_basic(base: str | int, chara: str | int, pass_type: _Pass, /) -> _Image.Image:
+def draw_basic(base: int, chara: int, pass_type: _Pass, /) -> _Image.Image:
     """Draw basic character image.
     Params:
         base (str): The base image file name.
@@ -34,9 +35,11 @@ def draw_basic(base: str | int, chara: str | int, pass_type: _Pass, /) -> _Image
     Returns:
         PIL.Image.Image: The generated image.
     """
-    base_image = _Image.open(f"resources/background/CardBase{str(base).zfill(6)}.png")
-    chara_image = _Image.open(f"resources/character/CardChara{str(chara).zfill(6)}.png")
-    pass_image = _Image.open(pass_type.value)
+    base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
+    chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+
+    pass_image = _open_image(pass_type.value)
+    print("[1/10] 绘制背景、角色和 DX Pass 基底...")
     base_image.alpha_composite(chara_image, (0, 0))
     base_image.alpha_composite(pass_image, (0, 0))
     return base_image
@@ -49,23 +52,25 @@ def draw_rating(rating: int | None, base: _Image.Image, /) -> _Image.Image:
     Returns:
         PIL.Image.Image: The generated image.
     """
+    print("[2/10] 绘制 DX Rating...")
     x = 690
 
     # Get the background
     if rating is not None:
-        rating_background = _Image.open(f"resources/general/Ra{_find_ra_bg(rating)}.png")
+        rating_background = _open_image(f"resources/general/Ra{_find_ra_bg(rating)}.png")
         base.alpha_composite(rating_background, (461, 32))
         # Draw the rating digit by digit, starting from the right
         while rating:
             digit = rating % 10
             rating //= 10
-            digit_img = _Image.open(f"resources/general/Num{digit}.png")
+            digit_img = _open_image(f"resources/general/Num{digit}.png")
             base.alpha_composite(digit_img, (x, 52))
             x -= 29
     else:
-        base.alpha_composite(_Image.open("resources/general/Ra1.png"), (461, 32))
+        print("[2/10] DX rating 将被隐藏。")
+        base.alpha_composite(_open_image("resources/general/Ra1.png"), (461, 32))
         for _ in range(5):
-            digit_img = _Image.open("resources/general/Num-.png")
+            digit_img = _open_image("resources/general/Num-.png")
             base.alpha_composite(digit_img, (x, 52))
             x -= 29
 
@@ -82,12 +87,14 @@ def draw_name(name: str, base: _Image.Image, /) -> _Image.Image:
         ValueError: If the name is too long (longer than 273 pixels a.k.a. 9.75 `Ａ`s).
     """
     # Prepare for the drawing
+    print("[3/10] 绘制玩家名...")
     font = _get_font(28)
     space_width = 182 # Length of 6.5 'Ａ's, also the length of available space
     max_width = 273 # 1.5 * SPACE_WIDTH, longer than this will cause an exception
     draw = _Draw.Draw(base)
 
     # Measure width of name
+    # We are not using utils.text_width_validate because player name is scalable
     name_bbox = draw.textbbox((0, 0), name, font=font, anchor="lt") # (0, 0, width, height)
 
     # Do not need the rescaling - directly draw
@@ -96,8 +103,10 @@ def draw_name(name: str, base: _Image.Image, /) -> _Image.Image:
         return base
     # Too long - raise an exception
     if name_bbox[2] > max_width:
-        raise ValueError(f"'{name}' is too wide (width: {name_bbox[2]}, max: {max_width})")
+        print(f"[ERROR] 文本过宽，超出限制值 {name_bbox[2] - max_width} 像素。")
+        raise ValueError(f"Text '{name}' is too wide (width: {name_bbox[2]}, max: {max_width})")
 
+    print("[3/10] 文本较长，需要横向压缩...")
     # Draw the name on a temporary image
     pad = 4 # Compensate for the difference caused by different text rendering method
     tmp_w = int(name_bbox[2]) + pad * 2
@@ -123,14 +132,18 @@ def draw_friend_code(code: int | str | None, base: _Image.Image, /) -> _Image.Im
     Returns:
         PIL.Image.Image: The generated image.
     """
+    print("[4/10] 绘制好友码...")
+    max_width = 195
     font = _get_font(20)
+    _text_width_validate(f"{code}", font, max_width)
     draw = _Draw.Draw(base)
 
     if code is not None:
         # Draw the friend code
         draw.text((628, 156), f"{code}", font=font, fill=(0, 0, 0), anchor="mt")
     else:
-        base.alpha_composite(_Image.open("resources/general/NoFriendCode.png"), (533, 160))
+        print("[4/10] 好友码将被隐藏。")
+        base.alpha_composite(_open_image("resources/general/NoFriendCode.png"), (533, 160))
 
     return base
 
@@ -151,10 +164,12 @@ def draw_aime(aime: int | str, base: _Image.Image, /, *, raw: bool = False) -> _
     else:
         aime = str(aime)
 
+    print("[5/10] 绘制 Aime ID...")
+    max_width = 270
     font = _get_font(16)
+    _text_width_validate(aime, font, max_width)
     draw = _Draw.Draw(base)
-    if aime is not None:
-        draw.text((156, 1006), aime, font=font, fill=(255, 255, 255), anchor="lt")
+    draw.text((156, 1006), aime, font=font, fill=(255, 255, 255), anchor="lt")
 
 
     return base
@@ -167,7 +182,10 @@ def draw_version(version: str, base: _Image.Image, /) -> _Image.Image:
     Returns:
         PIL.Image.Image: The generated image.
     """
+    print("[6/10] 绘制版本...")
+    max_width = 190
     font = _get_font(16)
+    _text_width_validate(version, font, max_width)
     draw = _Draw.Draw(base)
     draw.text((425, 1006), version, font=font, fill=(255, 255, 255), anchor="lt")
     return base
@@ -182,8 +200,10 @@ def draw_qr_code(data: str | None, base: _Image.Image, /) -> _Image.Image:
     Raises:
         ValueError: If the data overflows. The maximum version is QR Code 6.
     """
+    print("[7/10] 绘制二维码...")
     if data is None:
-        dummy_qr_code = _Image.open("resources/general/DummyQRCode.png")
+        print("[7/10] 二维码将使用占位符绘制。")
+        dummy_qr_code = _open_image("resources/general/DummyQRCode.png")
         base.alpha_composite(dummy_qr_code, (581, 866))
         return base
 
@@ -202,6 +222,7 @@ def draw_qr_code(data: str | None, base: _Image.Image, /) -> _Image.Image:
         box_count = len(qr.get_matrix())
         break
     else:
+        print("[ERROR] 尝试让二维码编码的内容过多。")
         raise ValueError(f"Data overflow. {len(data.encode('utf-8'))} bytes received.")
     box_size = 5 if version == 1 else 4 if version <= 3 else 3
     offset = (158 - box_count * box_size) // 2
@@ -238,17 +259,20 @@ def draw_icon(icons: list[_Icon] | None, base: _Image.Image, /) -> _Image.Image:
     Raises:
         ValueError: If too many icons are provided. At most 4 icons are allowed.
     """
+    print("[8/10] 绘制增益图标...")
     if icons is None:
+        print("[8/10] 无增益图标。")
         return base
 
     if (count := len(icons)) > 4:
+        print("[ERROR] 图标数量超出限制 (4 个图标)。过多图标会向右溢出导致二维码被遮挡。")
         raise ValueError(f"Icons exceed the limit (4 icons). {count} icons provided.")
     for i, icon in enumerate(icons):
-        icon_image = _Image.open(icon.value).convert("RGBA")
+        icon_image = _open_image(icon.value).convert("RGBA")
         base.alpha_composite(icon_image, (28 + i * 107, 870))
     return base
 
-def draw_chara_name(name: str | int, base: _Image.Image, /, *, search: bool = True) -> _Image.Image:
+def draw_chara_name(name: str | int, base: _Image.Image, /) -> _Image.Image:
     """Draw Character Name.
     Params:
         name (str | int): The character ID or name to draw.
@@ -259,17 +283,22 @@ def draw_chara_name(name: str | int, base: _Image.Image, /, *, search: bool = Tr
     Raises:
         ValueError: If the character ID is not found.
     """
-    if search:
+    print("[9/10] 绘制角色名...")
+    if isinstance(name, int):
         chara_name = _find_chara_name(name)
     else:
-        chara_name = str(name)
+        print("[9/10] 使用自定义角色名...")
+        chara_name = name
+
+    max_width = 200
     font = _get_font(15)
+    _text_width_validate(chara_name, font, max_width)
     draw = _Draw.Draw(base)
 
     draw.text((145, 802), chara_name, font=font, fill=(0, 0, 0), anchor="mt")
     return base
 
-def draw_date(date: str | None, base: _Image.Image, /) -> _Image.Image:
+def draw_date(date: str, base: _Image.Image, /) -> _Image.Image:
     """Draw Date.
     Params:
         date (str): The date to draw.
@@ -277,6 +306,7 @@ def draw_date(date: str | None, base: _Image.Image, /) -> _Image.Image:
     Returns:
         PIL.Image.Image: The generated image.
     """
+    print("[10/10] 绘制到期日期...")
     date = _date_process(date)
 
     font = _get_font(15)

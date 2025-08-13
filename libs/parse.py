@@ -16,6 +16,8 @@ Parser of the command line input.
 """
 import argparse as _argparse
 
+from .utils import text_validate as _text_validate, random_background as _rand_background,\
+    random_chara as _random_chara
 from .consts import DXPass as _Pass, Icon as _Icon
 def argparser() -> _argparse.Namespace:
     """
@@ -55,22 +57,22 @@ def argparser() -> _argparse.Namespace:
         "-c", "--chara",
         dest="chara",
         type=int,
-        required=True,
-        help="The character ID."
+        help="The character ID. Random by default.",
+        default=_random_chara()
     )
 
     parser.add_argument(
         "-b", "--background",
         dest="background",
         type=int,
-        required=True,
-        help="The background ID."
+        help="The background ID. Random by default.",
+        default=_rand_background()
     )
 
     parser.add_argument(
         "-n", "--name",
         dest="chara_name",
-        type=str,
+        type=_text_validate,
         help="Override the character name displayed.",
         default=None
     )
@@ -78,7 +80,7 @@ def argparser() -> _argparse.Namespace:
     parser.add_argument(
         "-p", "--player-name",
         dest="player_name",
-        type=str,
+        type=_text_validate,
         help=("The player name. 'maimai' by default. Half-width characters will be converted "
               "to full-width characters. --half-width and --full-width control this."),
         default="maimai"
@@ -110,7 +112,7 @@ def argparser() -> _argparse.Namespace:
     parser.add_argument(
         "-f", "--friend-code",
         dest="friend_code",
-        type=str,
+        type=_text_validate,
         help="The friend code. If not specified, the friend code will be displayed as '-----'.",
         default=None
     )
@@ -134,7 +136,7 @@ def argparser() -> _argparse.Namespace:
     parser.add_argument(
         "-v", "--version",
         dest="version",
-        type=str,
+        type=_text_validate,
         help="The version text. Empty by default.",
         default=""
     )
