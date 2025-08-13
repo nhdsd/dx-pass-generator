@@ -35,7 +35,7 @@ jobs:
           py main.py -c 550105 -b 500001 -p AAAAAAAA -r 15000 -a 12345678901234567890 -v "[maimaiDX]1.55-0291" -q "C:\7sRef\System256\metaverse\lasthope" -i level master rating -d "20250826"
       
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dx-pass-generator
           path: output.png
