@@ -11,8 +11,23 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-resources/
+resources/*/*
 .vscode
 venv/
 main.build/
 main.dist/
+
+# exclude those assets which are necessary for the ci workflow
+!resources/background/CardBase500001.png
+!resources/character/CardChara550105.png
+!resources/font/SEGA_MARUGOTHICDB.ttf
+!resources/general/GoldBase.png
+!resources/general/IconLevel.png
+!resources/general/IconMaster.png
+!resources/general/IconRating.png
+!resources/general/NoFriendCode.png
+!resources/general/Num0.png
+!resources/general/Num1.png
+!resources/general/Num5.png
+!resources/general/Ra11.png
+!resources/index/chara.json

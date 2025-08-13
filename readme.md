@@ -29,6 +29,8 @@ pip install -r requirements.txt
 > ```
 > 如果你需要隐藏 Rating 值，就需要自行转换该文件并把它放置在相应目录下。
 > 我们会在下一次资源文件有大幅变动时合并此更改。
+>
+> 注：仓库中包含的资源文件是给 GitHub Actions 使用的。
 
 ## 使用
 
