@@ -35,7 +35,7 @@ def _main(): # pylint: disable=too-many-branches
     if args.skip_rating:
         print("[2/10] 跳过 DX Rating 绘制。")
     else:
-        result = _draw_rating(args.rating, result)
+        result = _draw_rating(args.rating, result, override=args.override_rating)
     if args.skip_player_name:
         print("[3/10] 跳过玩家名称绘制。")
     else:

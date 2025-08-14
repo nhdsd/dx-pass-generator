@@ -140,6 +140,13 @@ def argparser() -> _argparse.Namespace:
         default=None
     )
     parser.add_argument(
+        "--override-rating",
+        dest="override_rating",
+        type=int,
+        help="Override the rating display with the value here.",
+        default=None
+    )
+    parser.add_argument(
         "--skip-rating",
         dest="skip_rating",
         action="store_true",

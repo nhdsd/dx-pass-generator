@@ -44,11 +44,12 @@ def draw_basic(base: int, chara: int, pass_type: _Pass, /) -> _Image.Image:
     base_image.alpha_composite(pass_image, (0, 0))
     return base_image
 
-def draw_rating(rating: int | None, base: _Image.Image, /) -> _Image.Image:
+def draw_rating(rating: int | None, base: _Image.Image, /, *, override: int | None) -> _Image.Image:
     """Draw DX Rating.
     Params:
         rating (int | None): The rating value. `None` means no rating.
         base (PIL.Image.Image): The input image to draw on.
+        override (int | None): The override rating value. `None` means no override.
     Returns:
         PIL.Image.Image: The generated image.
     """
@@ -57,9 +58,13 @@ def draw_rating(rating: int | None, base: _Image.Image, /) -> _Image.Image:
 
     # Get the background
     if rating is not None:
-        rating_background = _open_image(f"resources/general/Ra{_find_ra_bg(rating)}.png")
-        base.alpha_composite(rating_background, (461, 32))
+
+        rating_bg = _open_image(f"resources/general/Ra{_find_ra_bg(override or rating)}.png")
+        base.alpha_composite(rating_bg, (461, 32))
         # Draw the rating digit by digit, starting from the right
+        if rating < 0:
+            print("[ERROR] DX Rating 值不可以是负数。")
+            raise ValueError(f"Rating must be non-negative, but got {rating}.")
         while rating:
             digit = rating % 10
             rating //= 10
@@ -68,7 +73,8 @@ def draw_rating(rating: int | None, base: _Image.Image, /) -> _Image.Image:
             x -= 29
     else:
         print("[2/10] DX rating 将被隐藏。")
-        base.alpha_composite(_open_image("resources/general/Ra1.png"), (461, 32))
+        rating_bg = _open_image(f"resources/general/Ra{_find_ra_bg(override or 0)}.png")
+        base.alpha_composite(rating_bg, (461, 32))
         for _ in range(5):
             digit_img = _open_image("resources/general/Num-.png")
             base.alpha_composite(digit_img, (x, 52))
