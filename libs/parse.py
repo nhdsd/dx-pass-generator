@@ -19,6 +19,7 @@ import argparse as _argparse
 from .utils import text_validate as _text_validate, random_background as _rand_background,\
     random_chara as _random_chara
 from .consts import DXPass as _Pass, Icon as _Icon
+
 def argparser() -> _argparse.Namespace:
     """
     Parse the command line input.
@@ -42,6 +43,22 @@ def argparser() -> _argparse.Namespace:
             return _Icon[value.upper()]
         except KeyError as e:
             raise ValueError(f"Invalid icon type: {value}") from e
+
+    class _SkipNameDate(_argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            setattr(namespace, "skip_info_plate", True)
+            setattr(namespace, "skip_name", True)
+            setattr(namespace, "skip_date", True)
+
+    class _SkipAll(_argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            setattr(namespace, "skip_info_plate", True)
+            setattr(namespace, "skip_name", True)
+            setattr(namespace, "skip_date", True)
+            setattr(namespace, "skip_player_name", True)
+            setattr(namespace, "skip_rating", True)
+            setattr(namespace, "skip_friend_code", True)
+            setattr(namespace, "skip_qr_code", True)
 
     parser = _argparse.ArgumentParser(description="Generate a maimai DX pass image.")
 
@@ -76,6 +93,13 @@ def argparser() -> _argparse.Namespace:
         help="Override the character name displayed.",
         default=None
     )
+    parser.add_argument(
+        "--skip-name",
+        dest="skip_name",
+        action="store_true",
+        help="Skip the character name display.",
+        default=False
+    )
 
     parser.add_argument(
         "-p", "--player-name",
@@ -84,6 +108,13 @@ def argparser() -> _argparse.Namespace:
         help=("The player name. 'maimai' by default. Half-width characters will be converted "
               "to full-width characters. --half-width and --full-width control this."),
         default="maimai"
+    )
+    parser.add_argument(
+        "--skip-player-name",
+        dest="skip_player_name",
+        action="store_true",
+        help="Skip the player name display.",
+        default=False
     )
 
     full_width = parser.add_mutually_exclusive_group()
@@ -108,6 +139,13 @@ def argparser() -> _argparse.Namespace:
         help="The rating. If not specified, the friend code will be displayed as '-----'",
         default=None
     )
+    parser.add_argument(
+        "--skip-rating",
+        dest="skip_rating",
+        action="store_true",
+        help="Skip the rating display.",
+        default=False
+    )
 
     parser.add_argument(
         "-f", "--friend-code",
@@ -115,6 +153,13 @@ def argparser() -> _argparse.Namespace:
         type=_text_validate,
         help="The friend code. If not specified, the friend code will be displayed as '-----'.",
         default=None
+    )
+    parser.add_argument(
+        "--skip-friend-code",
+        dest="skip_friend_code",
+        action="store_true",
+        help="Skip the friend code display.",
+        default=False
     )
 
     parser.add_argument(
@@ -148,6 +193,20 @@ def argparser() -> _argparse.Namespace:
         help="The QR code text. If not specified, the dummy QR code will be used.",
         default=None
     )
+    parser.add_argument(
+        "--empty-qr-code",
+        dest="empty_qr_code",
+        action="store_true",
+        help="Use an empty QR code.",
+        default=False
+    )
+    parser.add_argument(
+        "--skip-qr-code",
+        dest="skip_qr_code",
+        action="store_true",
+        help="Skip the QR code display.",
+        default=False
+    )
 
     parser.add_argument(
         "-i", "--icon",
@@ -165,4 +224,42 @@ def argparser() -> _argparse.Namespace:
         help="The date text. If not specified, we will use the date 14 days later.",
         default=None
     )
+    parser.add_argument(
+        "--skip-date",
+        dest="skip_date",
+        action="store_true",
+        help="Skip the date display.",
+        default=False
+    )
+
+    parser.add_argument(
+        "--skip-name-date",
+        action=_SkipNameDate,
+        help="Skip the name and date display, as well as the background of the area.",
+        default=False,
+        nargs=0
+    )
+    parser.set_defaults(skip_info_plate=False)
+    parser.add_argument(
+        "--skip-all",
+        action=_SkipAll,
+        help="Skip all displays.",
+        default=False,
+        nargs=0
+    )
+
+    parser.add_argument(
+        "-o", "--output",
+        dest="output",
+        type=str,
+        help="The output file path. If not specified, the output will be saved to 'output.png'.",
+        default="output.png"
+    )
+    parser.add_argument(
+        "--no-override",
+        action="store_true",
+        help="Do not override existing files.",
+        default=False
+    )
+
     return parser.parse_args()

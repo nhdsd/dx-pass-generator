@@ -18,10 +18,10 @@ from enum import Enum as _Enum
 
 class DXPass(_Enum):
     """DX Pass types."""
-    BRONZE = "resources/general/BronzeBase.png"
-    SILVER = "resources/general/SilverBase.png"
-    GOLD = "resources/general/GoldBase.png"
-    FREEDOM = "resources/general/FreedomBase.png"
+    BRONZE = "resources/general/BronzeFrame.png"
+    SILVER = "resources/general/SilverFrame.png"
+    GOLD = "resources/general/GoldFrame.png"
+    FREEDOM = "resources/general/FreedomFrame.png"
 
     @classmethod
     def get_pass_name(cls, pass_type: str) -> str:

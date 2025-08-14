@@ -226,3 +226,12 @@ def random_background() -> int:
         raise ValueError("No valid image files found in directory: resources/background/")
     chosen_file = _choice(files)
     return int(chosen_file)
+
+def is_existing(file_path: str) -> bool:
+    """Check if a file exists.
+    Params:
+        file_path (str): The path to the file.
+    Returns:
+        bool: True if the file exists, False otherwise.
+    """
+    return _os.path.exists(file_path)

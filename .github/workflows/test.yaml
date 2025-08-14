@@ -8,6 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      artifacts: write
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -32,10 +36,13 @@ jobs:
 
       - name: Generation Example Image
         run: |
-          python main.py -c 550105 -b 500001 -p AAAAAAAA -r 15000 -a 12345678901234567890 -v "[maimaiDX]1.55-0291" -q "C:\7sRef\System256\metaverse\lasthope" -i level master rating -d "20250826"
-      
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dx-pass-generator
-          path: output.png
+          python main.py -c 550105 -b 500001 -p AAAAAAAA -r 15000 -f 1234567890 -a 12345678901234567890 -v "[maimaiDX]1.55-0291" -q "C:\7sRef\System256\metaverse\lasthope" -i level master rating -d "20250826"
+          python main.py -o output2.png
+          python main.py --half-width -a 1234567890123456789012345 --raw-aime --empty-qr-code --skip-name-date -o output3.png
+          python main.py --skip-all -o output4.png
+          ! python main.py -p AAAAAAAAAAAAA
+          ! python main.py -f 12345678901234567890
+          ! python main.py -q "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}+-*/!@#$%^&=_"
+          ! python main.py -i level master rating freedom power1
+          ! python main.py -d 20250832
+          ! python main.py --no-override

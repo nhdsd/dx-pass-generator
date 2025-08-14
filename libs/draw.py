@@ -88,6 +88,7 @@ def draw_name(name: str, base: _Image.Image, /) -> _Image.Image:
     """
     # Prepare for the drawing
     print("[3/10] 绘制玩家名...")
+    base.alpha_composite(_open_image("resources/general/Player.png"), (457, 107))
     font = _get_font(28)
     space_width = 182 # Length of 6.5 'Ａ's, also the length of available space
     max_width = 273 # 1.5 * SPACE_WIDTH, longer than this will cause an exception
@@ -133,6 +134,7 @@ def draw_friend_code(code: int | str | None, base: _Image.Image, /) -> _Image.Im
         PIL.Image.Image: The generated image.
     """
     print("[4/10] 绘制好友码...")
+    base.alpha_composite(_open_image("resources/general/Friend.png"), (457, 148))
     max_width = 195
     font = _get_font(20)
     _text_width_validate(f"{code}", font, max_width)
@@ -190,7 +192,7 @@ def draw_version(version: str, base: _Image.Image, /) -> _Image.Image:
     draw.text((425, 1006), version, font=font, fill=(255, 255, 255), anchor="lt")
     return base
 
-def draw_qr_code(data: str | None, base: _Image.Image, /) -> _Image.Image:
+def draw_qr_code(data: str | None, base: _Image.Image, /, *, empty: bool = False) -> _Image.Image:
     """Draw QR Code. Error correction level: Medium.
     Params:
         data (str | None): The data to encode in the QR code. Dummy QR code will be used if None.
@@ -201,6 +203,11 @@ def draw_qr_code(data: str | None, base: _Image.Image, /) -> _Image.Image:
         ValueError: If the data overflows. The maximum version is QR Code 6.
     """
     print("[7/10] 绘制二维码...")
+    base.alpha_composite(_open_image("resources/general/QRCodeBase.png"), (556, 841))
+    if empty:
+        print("[7/10] 二维码绘制将只保留空白背景。")
+        return base
+
     if data is None:
         print("[7/10] 二维码将使用占位符绘制。")
         dummy_qr_code = _open_image("resources/general/DummyQRCode.png")
@@ -249,7 +256,7 @@ def draw_qr_code(data: str | None, base: _Image.Image, /) -> _Image.Image:
 
     return base
 
-def draw_icon(icons: list[_Icon] | None, base: _Image.Image, /) -> _Image.Image:
+def draw_icon(icons: list[_Icon] | None, base: _Image.Image, /, *, qr: bool = True) -> _Image.Image:
     """Draw icons.
     Params:
         icons (list[Icon] | None): The list of icons. `None` means no icons.
@@ -264,12 +271,22 @@ def draw_icon(icons: list[_Icon] | None, base: _Image.Image, /) -> _Image.Image:
         print("[8/10] 无增益图标。")
         return base
 
-    if (count := len(icons)) > 4:
-        print("[ERROR] 图标数量超出限制 (4 个图标)。过多图标会向右溢出导致二维码被遮挡。")
-        raise ValueError(f"Icons exceed the limit (4 icons). {count} icons provided.")
+    if (count := len(icons)) > 4 + 0 if qr else 2:
+        print("[ERROR] 图标数量超出限制。过多图标会向右溢出。")
+        raise ValueError(f"Icons exceed the limit. {count} icons provided.")
     for i, icon in enumerate(icons):
         icon_image = _open_image(icon.value).convert("RGBA")
         base.alpha_composite(icon_image, (28 + i * 107, 870))
+    return base
+
+def draw_info_plate(base: _Image.Image, /) -> _Image.Image:
+    """Draw Info Plate.
+    Params:
+        base (PIL.Image.Image): The input image to draw on.
+    Returns:
+        PIL.Image.Image: The generated image.
+    """
+    base.alpha_composite(_open_image("resources/general/Name.png"), (0, 790))
     return base
 
 def draw_chara_name(name: str | int, base: _Image.Image, /) -> _Image.Image:
