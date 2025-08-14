@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      artifacts: write
       
     steps:
       - name: Checkout code
@@ -42,7 +41,7 @@ jobs:
           python main.py --skip-all -o output4.png
           ! python main.py -p AAAAAAAAAAAAA
           ! python main.py -f 12345678901234567890
-          ! python main.py -q "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}+-*/!@#$%^&=_"
+          ! python main.py -q "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"
           ! python main.py -i level master rating freedom power1
           ! python main.py -d 20250832
           ! python main.py --no-override
