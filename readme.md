@@ -25,6 +25,12 @@ pip install -r requirements.txt
 
 > 注：仓库中包含的资源文件是给 GitHub Actions 使用的。
 
+<details>
+   <summary>实验性内容...</summary>
+   实验性内容链接(约 50 MiB)：<a href="https://1drv.ms/u/c/68dff5f977fb346f/EVBcx0tfUJ1JuYThQyk2nsMBee_19dfnhLsGTCgpHk_V2g?e=AXyHLx">OneDrive</a><br>
+   将内容复制到资源目录下即可。
+</details>
+
 ## 使用
 
 使用命令行操作。参数可参考下表。所有参数都有默认值，带有 :ballot_box_with_check: 的参数不接受值（布尔型参数）：
