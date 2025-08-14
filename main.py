@@ -17,7 +17,8 @@ Main entry point for the application.
 from time import time as _time
 
 from libs.parse import argparser as _argparser
-from libs.utils import to_full_width as _to_full_width, is_existing as _is_existing
+from libs.utils import to_full_width as _to_full_width, is_existing as _is_existing, start,\
+    random_background as _random_background, random_chara as _random_chara
 from libs.draw import draw_rating as _draw_rating, draw_name as _draw_name\
     ,draw_friend_code as _draw_friend_code, draw_aime as _draw_aime, draw_version as _draw_version\
     ,draw_qr_code as _draw_qr_code, draw_icon as _draw_icon, draw_basic as _draw_basic\
@@ -25,17 +26,24 @@ from libs.draw import draw_rating as _draw_rating, draw_name as _draw_name\
     ,draw_info_plate as _draw_info_plate, draw_basic_holographic as _draw_basic_holographic
 
 def _main(): # pylint: disable=too-many-branches
-    start = _time()
-    print("绘制开始！")
     args = _argparser()
     if args.no_override and _is_existing(args.output):
         print(f"[ERROR] 输出文件 '{args.output}' 已存在，如果你想覆盖它，请不要使用 --no-override 选项。")
         raise FileExistsError(f"Output file '{args.output}' already exists.")
     if args.holographic:
         # pylint: disable=line-too-long
-        result = _draw_basic_holographic(args.background, args.chara, args.pass_type, holo=args.holo_from)
+        result = _draw_basic_holographic(
+            args.background or _random_background(),
+            chara := args.chara or _random_chara(),
+            args.pass_type,
+            holo=args.holo_from
+        )
     else:
-        result = _draw_basic(args.background, args.chara, args.pass_type)
+        result = _draw_basic(
+            args.background or _random_background(),
+            chara := args.chara or _random_chara(),
+            args.pass_type
+        )
     if args.skip_rating:
         print("[2/10] 跳过 DX Rating 绘制。")
     else:
@@ -65,8 +73,11 @@ def _main(): # pylint: disable=too-many-branches
     else:
         if args.chara_name is not None:
             result = _draw_chara_name(args.chara_name, result)
+        elif isinstance(chara, int):
+            result = _draw_chara_name(chara, result)
         else:
-            result = _draw_chara_name(args.chara, result)
+            print("[ERROR] 自定义角色必须要指定 -n/--name。")
+            raise ValueError("Custom character name must be specified with -n/--name.")
     if args.skip_date:
         print("[10/10] 跳过日期绘制。")
     else:

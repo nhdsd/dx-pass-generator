@@ -14,6 +14,7 @@
 """
 Some utility functions for image processing.
 """
+from time import time as _time
 import datetime as _datetime
 import json as _json
 from io import BytesIO as _BIO, StringIO as _SIO
@@ -46,6 +47,8 @@ def open_image(image: str) -> _Image.Image:
         not_found_err(image)
         raise
 
+start = _time()
+print("绘制开始！正在进行准备...")
 try:
     with open("resources/font/SEGA_MARUGOTHICDB.ttf", "rb") as _ttf:
         _FONT_BINARY = _BIO(_ttf.read())

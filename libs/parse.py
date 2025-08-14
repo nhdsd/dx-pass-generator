@@ -16,8 +16,7 @@ Parser of the command line input.
 """
 import argparse as _argparse
 
-from .utils import text_validate as _text_validate, random_background as _rand_background,\
-    random_chara as _random_chara
+from .utils import text_validate as _text_validate
 from .consts import DXPass as _Pass, Icon as _Icon
 
 def argparser() -> _argparse.Namespace:
@@ -26,6 +25,7 @@ def argparser() -> _argparse.Namespace:
     Returns:
         argparse.Namespace: The parsed arguments.
     """
+    print("解析命令行参数...")
     def _parse_int_or_str(value: str) -> int | str:
         try:
             return int(value)
@@ -70,21 +70,35 @@ def argparser() -> _argparse.Namespace:
         default=_Pass.GOLD
     )
 
-    parser.add_argument(
+    chara = parser.add_mutually_exclusive_group()
+    chara.add_argument(
         "-c", "--chara",
         dest="chara",
         type=int,
         help="The character ID. Random by default.",
-        default=_random_chara()
     )
+    chara.add_argument(
+        "-C", "--chara-from",
+        dest="chara",
+        type=str,
+        help="The custom chara image path."
+    )
+    parser.set_defaults(chara=None)
 
-    parser.add_argument(
+    background = parser.add_mutually_exclusive_group()
+    background.add_argument(
         "-b", "--background",
         dest="background",
         type=int,
         help="The background ID. Random by default.",
-        default=_rand_background()
     )
+    background.add_argument(
+        "-B", "--background-from",
+        dest="background",
+        type=str,
+        help="The custom background image path."
+    )
+    parser.set_defaults(background=None)
 
     parser.add_argument(
         "-H", "--holographic",

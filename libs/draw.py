@@ -28,7 +28,7 @@ from .utils import get_font as _get_font, aime_process as _aime_process,\
 from .consts import DXPass as _Pass, Icon as _Icon
 
 
-def draw_basic(base: int, chara: int, pass_type: _Pass, /) -> _Image.Image:
+def draw_basic(base: int | str, chara: int | str, pass_type: _Pass, /) -> _Image.Image:
     """Draw basic character image.
     Params:
         base (str): The base image file name.
@@ -36,8 +36,15 @@ def draw_basic(base: int, chara: int, pass_type: _Pass, /) -> _Image.Image:
     Returns:
         PIL.Image.Image: The generated image.
     """
-    base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
-    chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+    if isinstance(base, int):
+        base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
+    else:
+        base_image = _open_image(base)
+
+    if isinstance(chara, int):
+        chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+    else:
+        chara_image = _open_image(chara)
 
     pass_image = _open_image(pass_type.value[0])
     icon_image = _open_image(pass_type.value[0][:-4] + "Icon.png")
@@ -50,7 +57,12 @@ def draw_basic(base: int, chara: int, pass_type: _Pass, /) -> _Image.Image:
     return base_image
 
 # pylint: disable=line-too-long, too-many-locals
-def draw_basic_holographic(base: int, chara: int, pass_type: _Pass, /, *, holo: str) -> _Image.Image:
+def draw_basic_holographic(
+        base: int | str,
+        chara: int | str,
+        pass_type: _Pass,
+        /, *,
+        holo: str) -> _Image.Image:
     """Draw basic character image.
     Params:
         base (str): The base image file name.
@@ -59,34 +71,26 @@ def draw_basic_holographic(base: int, chara: int, pass_type: _Pass, /, *, holo: 
         PIL.Image.Image: The generated image.
     """
     print("[WARN] 镭射效果是实验性功能。")
-    base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
-    chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+    if isinstance(base, int):
+        base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
+    else:
+        base_image = _open_image(base).convert("RGBA").resize((768, 1052))
+
+    if isinstance(chara, int):
+        chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+    else:
+        chara_image = _open_image(chara).convert("RGBA").resize((768, 1052))
 
     black_image = _Image.new("RGBA", (768, 1052), (255, 255, 255, 255))
     chara_mask = _Image.eval(_Image.alpha_composite(
         black_image,
         _open_image(f"resources/holograph/CardCharaMask{str(chara).zfill(6)}.png")
     ).convert("L"), lambda px: 255 - px)
-    frame_mask = _Image.eval(_Image.alpha_composite(
-        black_image,
-        _open_image("resources/general/HoloFrame.png")
-    ).convert("L"), lambda px: 255 - px)
-    base_mask = _Image.eval(
-        _Image.open("resources/general/HoloBase.png").convert("L"),
-        lambda px: 255 - px
-    )
 
     holo_img = _open_image(holo)
     chara_holo = holo_img.copy()
     chara_holo.putalpha(chara_mask)
 
-    frame_holo = holo_img.copy()
-    frame_holo.putalpha(frame_mask)
-
-    base_holo = holo_img.copy()
-    base_holo.putalpha(base_mask)
-
-    base_image.alpha_composite(base_holo, (0, 0))
     pass_image = _open_image(pass_type.value[0])
     icon_image = _open_image(pass_type.value[0][:-4] + "Icon.png")
     serial_image = _open_image("resources/general/SerialCode.png")
@@ -94,7 +98,6 @@ def draw_basic_holographic(base: int, chara: int, pass_type: _Pass, /, *, holo: 
     base_image.alpha_composite(chara_image, (0, 0))
     base_image.alpha_composite(chara_holo, (0, 0))
     base_image.alpha_composite(pass_image, (0, 0))
-    base_image.alpha_composite(frame_holo, (0, 0))
     base_image.alpha_composite(icon_image, pass_type.value[1])
     base_image.alpha_composite(serial_image, (141, 1000))
     return base_image
