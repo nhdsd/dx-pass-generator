@@ -37,6 +37,8 @@ pip install -r requirements.txt
 | `‑l` | `‑‑pass‑level` | DX Pass 的等级。允许 `bronze`、`silver`、`gold`（默认）、`freedom`。不区分大小写。|
 | `‑c` | `‑‑chara` | 角色的 ID。可以通过查看 `resources/character` 下图片的文件名获取。可以忽略掉前导零。不指定就会随机抽取。|
 | `‑b` | `‑‑background` | 背景的 ID。可以通过查看 `resources/background` 下图片的文件名获取。可以忽略掉前导零。不指定就会随机抽取。|
+| *`‑H`* | *`‑‑holographic`* | :ballot_box_with_check: :warning:**实验性**:warning: 应用镭射效果。目前的镭射效果底图的视觉效果很差，且遮罩图片包含大量实际打印时不会出现的极小区域，严重限制了本参数的视觉效果（大多数时候是反效果）。|
+| | *`‑‑holo‑from`* | :warning:**实验性**:warning: 从指定路径加载镭射效果底图。|
 | `‑n` | `‑‑name` | 自定义显示的角色名称。|
 | | `‑‑skip‑name` | :ballot_box_with_check: 完全跳过角色名生成。|
 | `‑p` | `‑‑player‑name` | 玩家名称。不指定会显示为 "maimai"。为了方便起见，默认情况下玩家名称会被转换为全角的。|
@@ -74,8 +76,8 @@ py main.py -c 550105 -b 500001 -p AAAAAAAA -r 15000 -a 12345678901234567890 -v "
 
 下面列表的顺序是计划实现这些功能的顺序，但是实际顺序可能依据实现难度而变化。
 
-- 镭射效果
 - 自定义背景与角色
+- 镭射效果降噪与底图替换
 - 音击 & 中二节奏角色与背景资源
 
 ## 许可证

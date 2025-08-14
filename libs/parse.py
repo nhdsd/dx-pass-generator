@@ -87,6 +87,22 @@ def argparser() -> _argparse.Namespace:
     )
 
     parser.add_argument(
+        "-H", "--holographic",
+        dest="holographic",
+        action="store_true",
+        help="Enable holographic display.",
+        default=False
+    )
+    parser.add_argument(
+        "--holo-from",
+        dest="holo_from",
+        type=str,
+        help="Holographic frame source.",
+        default="resources/general/Laser.png"
+    )
+
+
+    parser.add_argument(
         "-n", "--name",
         dest="chara_name",
         type=_text_validate,

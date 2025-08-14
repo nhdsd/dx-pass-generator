@@ -22,7 +22,7 @@ from libs.draw import draw_rating as _draw_rating, draw_name as _draw_name\
     ,draw_friend_code as _draw_friend_code, draw_aime as _draw_aime, draw_version as _draw_version\
     ,draw_qr_code as _draw_qr_code, draw_icon as _draw_icon, draw_basic as _draw_basic\
     ,draw_chara_name as _draw_chara_name, draw_date as _draw_date\
-    ,draw_info_plate as _draw_info_plate
+    ,draw_info_plate as _draw_info_plate, draw_basic_holographic as _draw_basic_holographic
 
 def _main(): # pylint: disable=too-many-branches
     start = _time()
@@ -31,7 +31,11 @@ def _main(): # pylint: disable=too-many-branches
     if args.no_override and _is_existing(args.output):
         print(f"[ERROR] 输出文件 '{args.output}' 已存在，如果你想覆盖它，请不要使用 --no-override 选项。")
         raise FileExistsError(f"Output file '{args.output}' already exists.")
-    result = _draw_basic(args.background, args.chara, args.pass_type)
+    if args.holographic:
+        # pylint: disable=line-too-long
+        result = _draw_basic_holographic(args.background, args.chara, args.pass_type, holo=args.holo_from)
+    else:
+        result = _draw_basic(args.background, args.chara, args.pass_type)
     if args.skip_rating:
         print("[2/10] 跳过 DX Rating 绘制。")
     else:

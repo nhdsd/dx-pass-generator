@@ -14,6 +14,7 @@
 """
 Drawing functions for image processing.
 """
+from math import ceil
 import PIL.Image as _Image
 import PIL.ImageDraw as _Draw
 import qrcode as _qrcode
@@ -38,11 +39,66 @@ def draw_basic(base: int, chara: int, pass_type: _Pass, /) -> _Image.Image:
     base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
     chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
 
-    pass_image = _open_image(pass_type.value)
+    pass_image = _open_image(pass_type.value[0])
+    icon_image = _open_image(pass_type.value[0][:-4] + "Icon.png")
+    serial_image = _open_image("resources/general/SerialCode.png")
     print("[1/10] 绘制背景、角色和 DX Pass 基底...")
     base_image.alpha_composite(chara_image, (0, 0))
     base_image.alpha_composite(pass_image, (0, 0))
+    base_image.alpha_composite(icon_image, pass_type.value[1])
+    base_image.alpha_composite(serial_image, (141, 1000))
     return base_image
+
+# pylint: disable=line-too-long, too-many-locals
+def draw_basic_holographic(base: int, chara: int, pass_type: _Pass, /, *, holo: str) -> _Image.Image:
+    """Draw basic character image.
+    Params:
+        base (str): The base image file name.
+        chara (str): The character image file name.
+    Returns:
+        PIL.Image.Image: The generated image.
+    """
+    print("[WARN] 镭射效果是实验性功能。")
+    base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
+    chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+
+    black_image = _Image.new("RGBA", (768, 1052), (255, 255, 255, 255))
+    chara_mask = _Image.eval(_Image.alpha_composite(
+        black_image,
+        _open_image(f"resources/holograph/CardCharaMask{str(chara).zfill(6)}.png")
+    ).convert("L"), lambda px: 255 - px)
+    frame_mask = _Image.eval(_Image.alpha_composite(
+        black_image,
+        _open_image("resources/general/HoloFrame.png")
+    ).convert("L"), lambda px: 255 - px)
+    base_mask = _Image.eval(
+        _Image.open("resources/general/HoloBase.png").convert("L"),
+        lambda px: 255 - px
+    )
+
+    holo_img = _open_image(holo)
+    chara_holo = holo_img.copy()
+    chara_holo.putalpha(chara_mask)
+
+    frame_holo = holo_img.copy()
+    frame_holo.putalpha(frame_mask)
+
+    base_holo = holo_img.copy()
+    base_holo.putalpha(base_mask)
+
+    base_image.alpha_composite(base_holo, (0, 0))
+    pass_image = _open_image(pass_type.value[0])
+    icon_image = _open_image(pass_type.value[0][:-4] + "Icon.png")
+    serial_image = _open_image("resources/general/SerialCode.png")
+    print("[1/10] 绘制背景、角色和 DX Pass 基底...")
+    base_image.alpha_composite(chara_image, (0, 0))
+    base_image.alpha_composite(chara_holo, (0, 0))
+    base_image.alpha_composite(pass_image, (0, 0))
+    base_image.alpha_composite(frame_holo, (0, 0))
+    base_image.alpha_composite(icon_image, pass_type.value[1])
+    base_image.alpha_composite(serial_image, (141, 1000))
+    return base_image
+
 
 def draw_rating(rating: int | None, base: _Image.Image, /, *, override: int | None) -> _Image.Image:
     """Draw DX Rating.
@@ -295,7 +351,7 @@ def draw_info_plate(base: _Image.Image, /) -> _Image.Image:
     base.alpha_composite(_open_image("resources/general/Name.png"), (0, 790))
     return base
 
-def draw_chara_name(name: str | int, base: _Image.Image, /) -> _Image.Image:
+def draw_chara_name(name_or_id: str | int, base: _Image.Image, /) -> _Image.Image:
     """Draw Character Name.
     Params:
         name (str | int): The character ID or name to draw.
@@ -307,18 +363,25 @@ def draw_chara_name(name: str | int, base: _Image.Image, /) -> _Image.Image:
         ValueError: If the character ID is not found.
     """
     print("[9/10] 绘制角色名...")
-    if isinstance(name, int):
-        chara_name = _find_chara_name(name)
+    if isinstance(name_or_id, int):
+        name = _find_chara_name(name_or_id)
     else:
         print("[9/10] 使用自定义角色名...")
-        chara_name = name
+        name = name_or_id
 
-    max_width = 200
-    font = _get_font(15)
-    _text_width_validate(chara_name, font, max_width)
+    max_width = 220
+    for size in (15, 14, 13, 12):
+        font = _get_font(size)
+        text_width = font.getbbox(name, anchor="lt")[2]
+        if text_width > max_width:
+            continue
+        break
+    else:
+        print(f"[ERROR] 文本过宽，超出限制值 {ceil(text_width) - max_width} 像素。")
+        raise ValueError(f"Text '{name}' is too wide (width: {ceil(text_width)}, max: {max_width})")
     draw = _Draw.Draw(base)
 
-    draw.text((145, 802), chara_name, font=font, fill=(0, 0, 0), anchor="mt")
+    draw.text((145, 802 + int(size==12)), name, font=font, fill=(0, 0, 0), anchor="mt")
     return base
 
 def draw_date(date: str, base: _Image.Image, /) -> _Image.Image:

@@ -18,23 +18,10 @@ from enum import Enum as _Enum
 
 class DXPass(_Enum):
     """DX Pass types."""
-    BRONZE = "resources/general/BronzeFrame.png"
-    SILVER = "resources/general/SilverFrame.png"
-    GOLD = "resources/general/GoldFrame.png"
-    FREEDOM = "resources/general/FreedomFrame.png"
-
-    @classmethod
-    def get_pass_name(cls, pass_type: str) -> str:
-        """
-        Get the DX Pass name for a given type.
-        Params:
-            pass_type (str): The DX Pass type.
-        Returns:
-            str: The DX Pass name for the given type.
-        """
-        if not isinstance(pass_type, str):
-            raise TypeError(f"Expected str, but got {type(pass_type).__name__}.")
-        return cls[pass_type.upper()].value
+    BRONZE = ("resources/general/Bronze.png", (60, 27))
+    SILVER = ("resources/general/Silver.png", (55, 24))
+    GOLD = ("resources/general/Gold.png", (47, 24))
+    FREEDOM = ("resources/general/Freedom.png", (45, 21))
 
 class Icon(_Enum):
     """Icon types."""

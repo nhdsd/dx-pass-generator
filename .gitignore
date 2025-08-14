@@ -23,7 +23,9 @@ binary/
 !resources/character/CardChara550105.png
 !resources/font/SEGA_MARUGOTHICDB.ttf
 !resources/general/Friend.png
-!resources/general/GoldFrame.png
+!resources/general/Gold.png
+!resources/general/GoldIcon.png
+!resources/general/SerialCode.png
 !resources/general/DummyQRCode.png
 !resources/general/IconFreedom.png
 !resources/general/IconLevel.png
