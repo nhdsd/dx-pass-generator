@@ -207,7 +207,7 @@ def random_chara() -> int:
         int: The ID of the randomly chosen character image.
     """
     print("[1/10] 随机选取角色...")
-    files = [f[10:-4] for f in _os.listdir("resources/character/") if f.endswith((".png"))]
+    files = [f[9:-4] for f in _os.listdir("resources/character/") if f.endswith((".png"))]
     if not files:
         print("[ERROR] 随机选取角色失败。请检查资源文件完整性。")
         raise ValueError("No valid image files found in directory: resources/character/")
@@ -220,7 +220,7 @@ def random_background() -> int:
         int: The ID of the randomly chosen background image.
     """
     print("[1/10] 随机选取背景...")
-    files = [f[9:-4] for f in _os.listdir("resources/background/") if f.endswith((".png"))]
+    files = [f[8:-4] for f in _os.listdir("resources/background/") if f.endswith((".png"))]
     if not files:
         print("[ERROR] 随机选取背景失败。请检查资源文件完整性。")
         raise ValueError("No valid image files found in directory: resources/background/")
