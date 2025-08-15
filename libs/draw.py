@@ -39,12 +39,12 @@ def draw_basic(base: int | str, chara: int | str, pass_type: _Pass, /) -> _Image
     if isinstance(base, int):
         base_image = _open_image(f"resources/background/CardBase{str(base).zfill(6)}.png")
     else:
-        base_image = _open_image(base)
+        base_image = _open_image(base).convert("RGBA").resize((768, 1052))
 
     if isinstance(chara, int):
-        chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+        chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(7)}.png")
     else:
-        chara_image = _open_image(chara)
+        chara_image = _open_image(chara).convert("RGBA").resize((768, 1052))
 
     pass_image = _open_image(pass_type.value[0])
     icon_image = _open_image(pass_type.value[0][:-4] + "Icon.png")
@@ -77,7 +77,7 @@ def draw_basic_holographic(
         base_image = _open_image(base).convert("RGBA").resize((768, 1052))
 
     if isinstance(chara, int):
-        chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(6)}.png")
+        chara_image = _open_image(f"resources/character/CardChara{str(chara).zfill(7)}.png")
     else:
         chara_image = _open_image(chara).convert("RGBA").resize((768, 1052))
 
@@ -354,7 +354,7 @@ def draw_info_plate(base: _Image.Image, /) -> _Image.Image:
     base.alpha_composite(_open_image("resources/general/Name.png"), (0, 790))
     return base
 
-def draw_chara_name(name_or_id: str | int, base: _Image.Image, /) -> _Image.Image:
+def draw_chara_name(name_or_id: str | int, base: _Image.Image, /, *, discard: bool = False) -> _Image.Image:
     """Draw Character Name.
     Params:
         name (str | int): The character ID or name to draw.
@@ -372,19 +372,42 @@ def draw_chara_name(name_or_id: str | int, base: _Image.Image, /) -> _Image.Imag
         print("[9/10] 使用自定义角色名...")
         name = name_or_id
 
-    max_width = 220
-    for size in (15, 14, 13, 12):
+    if discard:
+        if name.find("]") != -1:
+            name = name.split("[", 1)[0].strip()
+
+    line_break = False
+    max_width = 230
+    for size in (15, 14, 13, 12, 11):
         font = _get_font(size)
         text_width = font.getbbox(name, anchor="lt")[2]
         if text_width > max_width:
             continue
         break
     else:
-        print(f"[ERROR] 文本过宽，超出限制值 {ceil(text_width) - max_width} 像素。")
-        raise ValueError(f"Text '{name}' is too wide (width: {ceil(text_width)}, max: {max_width})")
-    draw = _Draw.Draw(base)
+        if name.find("[") != -1 and name.find("]") != -1:
+            print("[9/10] 角色名过长但包含 “[]”，正在尝试折行...")
+            font = _get_font(10)
+            line1, line2 = name.split("[", 1)
+            line2 = "[" + line2
+            width1 = font.getbbox(line1, anchor="lt")[2]
+            width2 = font.getbbox(line2, anchor="lt")[2]
+            if width1 <= max_width and width2 <= max_width:
+                line_break = True
+            else:
+                text_width = max(width1, width2)
+                print(f"[ERROR] 文本过宽，超出限制值 {ceil(text_width) - max_width} 像素。")
+                raise ValueError(f"Text '{name}' is too wide (width: {ceil(text_width)}, max: {max_width})")
 
-    draw.text((145, 802 + int(size==12)), name, font=font, fill=(0, 0, 0), anchor="mt")
+        else:
+            print(f"[ERROR] 文本过宽，超出限制值 {ceil(text_width) - max_width} 像素。")
+            raise ValueError(f"Text '{name}' is too wide (width: {ceil(text_width)}, max: {max_width})")
+    draw = _Draw.Draw(base)
+    if line_break:
+        draw.text((140, 799), line1, font=font, fill=(0, 0, 0), anchor="mt")
+        draw.text((140, 810), line2, font=font, fill=(0, 0, 0), anchor="mt")
+    else:
+        draw.text((140, 802 + int(size < 13)), name, font=font, fill=(0, 0, 0), anchor="mt")
     return base
 
 def draw_date(date: str, base: _Image.Image, /) -> _Image.Image:
@@ -402,7 +425,7 @@ def draw_date(date: str, base: _Image.Image, /) -> _Image.Image:
     font_date = _get_font(20)
     draw = _Draw.Draw(base)
 
-    draw.text((42, 832), "ブースト期限", font=font, fill=(0, 0, 0), anchor="lt")
-    draw.text((156, 831), date, font=font_date, fill=(0, 0, 0), anchor="lt")
+    draw.text((37, 832), "ブースト期限", font=font, fill=(0, 0, 0), anchor="lt")
+    draw.text((151, 831), date, font=font_date, fill=(0, 0, 0), anchor="lt")
 
     return base

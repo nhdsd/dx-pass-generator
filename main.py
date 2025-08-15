@@ -72,9 +72,9 @@ def _main(): # pylint: disable=too-many-branches
         print("[9/10] 跳过角色名称绘制。")
     else:
         if args.chara_name is not None:
-            result = _draw_chara_name(args.chara_name, result)
+            result = _draw_chara_name(args.chara_name, result, discard=args.discard_comment)
         elif isinstance(chara, int):
-            result = _draw_chara_name(chara, result)
+            result = _draw_chara_name(chara, result, discard=args.discard_comment)
         else:
             print("[ERROR] 自定义角色必须要指定 -n/--name。")
             raise ValueError("Custom character name must be specified with -n/--name.")

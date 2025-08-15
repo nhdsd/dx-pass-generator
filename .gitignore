@@ -20,7 +20,7 @@ binary/
 
 # exclude those assets which are necessary for the ci workflow
 !resources/background/CardBase500001.png
-!resources/character/CardChara550105.png
+!resources/character/CardChara0550105.png
 !resources/font/SEGA_MARUGOTHICDB.ttf
 !resources/general/Friend.png
 !resources/general/Gold.png

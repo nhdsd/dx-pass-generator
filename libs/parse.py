@@ -130,6 +130,13 @@ def argparser() -> _argparse.Namespace:
         help="Skip the character name display.",
         default=False
     )
+    parser.add_argument(
+        "--discard-comment",
+        dest="discard_comment",
+        action="store_true",
+        help="Discard the comment part (the part in []). Designed for O.N.G.E.K.I characters.",
+        default=False
+    )
 
     parser.add_argument(
         "-p", "--player-name",

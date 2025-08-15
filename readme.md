@@ -49,6 +49,7 @@ pip install -r requirements.txt
 | | *`‑‑holo‑from`* | :warning:**实验性**:warning: 从指定路径加载镭射效果底图。|
 | `‑n` | `‑‑name` | 自定义显示的角色名称。|
 | | `‑‑skip‑name` | :ballot_box_with_check: 完全跳过角色名生成。|
+| | `‑‑discard‑comment` | :ballot_box_with_check: 忽略角色名中 \[\] 的部分。此选项是给音击角色设计的。|
 | `‑p` | `‑‑player‑name` | 玩家名称。不指定会显示为 "maimai"。为了方便起见，默认情况下玩家名称会被转换为全角的。|
 | | `‑‑full‑width` | :ballot_box_with_check: 指定玩家名称使用全角字符显示。这也是默认效果。|
 | | `‑‑half‑width` | :ballot_box_with_check: 指定玩家名称使用半角字符显示。这并不会把原有的全角字符转换为半角的。|
@@ -85,7 +86,7 @@ py main.py -c 550105 -b 500001 -p AAAAAAAA -r 15000 -a 12345678901234567890 -v "
 下面列表的顺序是计划实现这些功能的顺序，但是实际顺序可能依据实现难度而变化。
 
 - 镭射效果降噪与底图替换
-- 音击 & 中二节奏角色与背景资源
+- 中二节奏角色与背景资源
 
 ## 许可证
 
